@@ -1,0 +1,69 @@
+import React, { useEffect, useState } from 'react'
+import { usePlayerValue } from '../Context/PlayerContext'
+import { useGetMusic } from '../hooks/useGetMusic'
+import styles from './Player.module.css'
+
+const Player = () => {
+    const {index} = usePlayerValue()
+    let [indexMusic, SetIndexMusic] = useState(index)
+    const {music} = useGetMusic(indexMusic)
+    const [play, setPlay] = useState(false)
+    const [audio, setAudio] = useState(new Audio(`musc/${music.src}.m4a`))
+    const next = () =>{
+        if (indexMusic >= 7) {
+            SetIndexMusic(1)
+        } else{
+            SetIndexMusic(indexMusic+= 1)
+        }
+        audio.pause()
+    }
+    useEffect(() => {
+        setAudio(new Audio(`musc/${music.src}.m4a`))
+    }, [indexMusic, music.src])
+    useEffect(() => {
+        play ? audio.play() : audio.pause()
+    }, [audio, play])
+  return (
+    <div className={styles.container} >
+        <div className={styles.content}>
+          <div className={styles.header}>
+          <i className='bx bx-chevron-left'></i>
+              <span>Tocando agora</span>
+              <i className='bx bx-dots-vertical-rounded'></i>
+          </div>
+          <div className={styles.imgare}>
+          <img src={`img/${music.img}.jpg`} alt="" />
+
+          </div>
+          <div className={styles.song_details}>
+              <span>{music.name}</span>
+              <p>{music.artista}</p>
+          </div>
+          <div className={styles.progress_area}>
+              <div className={styles.progress_bar}>
+
+              </div>
+              <div className={styles.time}>
+                  <span > tempo atual</span>
+                  <span >Duração </span>
+              </div>
+              <audio id="audio" src=""></audio>
+          </div>
+        
+          <div className={styles.controls}>
+              <i id="repeat" className='bx bx-repeat' title="Repetição de playlist ativada" ></i>
+              <i id="prev" className='bx bx-skip-previous-circle'></i>
+              <div className={styles.play} onClick={() => setPlay(!play)} >
+                      {play ? (
+                      <i  className=' vortano bx bx-pause-circle'></i>) : (
+                          <i className=' indu bx bx-play-circle'></i>)}
+                  </div>
+              <i id="next" onClick={() => next()} className='bx bx-skip-next-circle'></i>
+              <i id="more" className='bx bxs-playlist'></i>
+          </div>
+        </div>
+    </div>
+  )
+}
+
+export default Player
